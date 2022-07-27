@@ -801,8 +801,13 @@ func (a *PipelineControllerApiService) InvokePipelineConfigUsingPOST1(ctx contex
 	if err != nil || localVarHttpResponse == nil {
 		return successPayload, localVarHttpResponse, err
 	}
+	
+	if err = json.NewDecoder(localVarHttpResponse.Body).Decode(&successPayload); err != nil {
+		return successPayload, localVarHttpResponse, err
+	}
 
 	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+
 	localVarHttpResponse.Body.Close()
 	if err != nil {
 		return successPayload, localVarHttpResponse, err
@@ -813,7 +818,6 @@ func (a *PipelineControllerApiService) InvokePipelineConfigUsingPOST1(ctx contex
 			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-
 		if localVarHttpResponse.StatusCode == 202 {
 			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
@@ -824,12 +828,9 @@ func (a *PipelineControllerApiService) InvokePipelineConfigUsingPOST1(ctx contex
 			newErr.model = v
 			return successPayload, localVarHttpResponse, newErr
 		}
-
 		return successPayload, localVarHttpResponse, newErr
 	}
-	if err = json.NewDecoder(localVarHttpResponse.Body).Decode(&successPayload); err != nil {
-		return successPayload, localVarHttpResponse, err
-	}
+
 	return successPayload, localVarHttpResponse, nil
 }
 
